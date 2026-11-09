@@ -74,56 +74,60 @@ st.markdown("""
     label { color: #ffffff !important; }
     .stSlider label { color: #ffffff !important; }
     .stCaption { color: #aaaaaa !important; }
-    /* NAVEGACION PRINCIPAL — botones grandes, siempre legibles */
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
-        background: #0d111a !important;
-        border-bottom: 2px solid #2a4551 !important;
+    /* Navegacion: selectores accesibles que usa Streamlit/BaseWeb */
+    div[data-testid="stTabs"] [role="tablist"],
+    .stTabs [role="tablist"] {
+        background: #111827 !important;
+        border-bottom: 2px solid #43546c !important;
         gap: 12px !important;
-        padding: 9px 0 12px !important;
+        padding: 10px 4px 12px !important;
+        align-items: center !important;
     }
-    div[data-testid="stTabs"] button[data-baseweb="tab"] {
-        background: #263246 !important;
-        color: #f2f5fb !important;
-        opacity: 1 !important;
-        font-size: 18px !important;
-        font-weight: 800 !important;
-        letter-spacing: 0.035em !important;
-        padding: 15px 28px !important;
-        min-height: 58px !important;
-        border-radius: 10px !important;
-        border: 2px solid #52667f !important;
-        box-shadow: 0 2px 8px #0006 !important;
-        transition: background .15s ease, border-color .15s ease !important;
-    }
-    div[data-testid="stTabs"] button[data-baseweb="tab"] p {
-        font-size: 18px !important;
-        font-weight: 800 !important;
-        color: inherit !important;
-        opacity: 1 !important;
-    }
-    div[data-testid="stTabs"] button[data-baseweb="tab"]:hover {
-        background: #304457 !important;
-        border-color: #70b8ae !important;
-    }
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
-        background: #154a3f !important;
+    div[data-testid="stTabs"] [role="tab"],
+    .stTabs [role="tab"] {
+        background-color: #27374e !important;
+        background-image: none !important;
         color: #ffffff !important;
-        border-color: #35d59a !important;
-        box-shadow: 0 0 0 1px #35d59a55, 0 0 15px #35d59a22 !important;
+        opacity: 1 !important;
+        font-size: 19px !important;
+        font-weight: 800 !important;
+        min-height: 60px !important;
+        padding: 14px 27px !important;
+        border: 2px solid #62748b !important;
+        border-radius: 12px !important;
+        box-shadow: 0 3px 10px #0008 !important;
     }
-    div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
-        background: #35d59a !important;
+    div[data-testid="stTabs"] [role="tab"] :is(p,span,div,svg),
+    .stTabs [role="tab"] :is(p,span,div,svg) {
+        color: #ffffff !important;
+        fill: currentColor !important;
+        opacity: 1 !important;
+        font-size: inherit !important;
+        font-weight: 800 !important;
+    }
+    div[data-testid="stTabs"] [role="tab"]:hover,
+    .stTabs [role="tab"]:hover {
+        background-color: #36516a !important;
+        border-color: #89d7c1 !important;
+    }
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
+    .stTabs [role="tab"][aria-selected="true"] {
+        background-color: #14614e !important;
+        border-color: #39e2a7 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 1px #39e2a770, 0 0 15px #39e2a730 !important;
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    .stTabs [data-baseweb="tab-highlight"] {
+        background: #39e2a7 !important;
         height: 3px !important;
     }
     @media (max-width: 768px) {
         .stDataFrame tbody td { font-size: 0.65rem !important; }
         h2 { font-size: 1.1rem !important; }
-        div[data-testid="stTabs"] button[data-baseweb="tab"] {
-            font-size: 13px !important; padding: 10px 12px !important;
+        div[data-testid="stTabs"] [role="tab"], .stTabs [role="tab"] {
+            font-size: 14px !important; padding: 10px 12px !important;
             min-height: 46px !important;
-        }
-        div[data-testid="stTabs"] button[data-baseweb="tab"] p {
-            font-size: 13px !important;
         }
     }
 </style>
