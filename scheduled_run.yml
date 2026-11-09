@@ -1,0 +1,48 @@
+name: "L'Crack V4 - Radar diario"
+on:
+  schedule:
+    - cron: "15 23 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Simular mensajes sin enviar ni registrar"
+        required: false
+        type: boolean
+        default: true
+permissions:
+  contents: write
+concurrency:
+  group: lcrack-v4-alertas
+  cancel-in-progress: false
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Dependencias
+        run: pip install -r requirements.txt
+      - name: Procesar y avisar Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            python scripts/daily_snapshot.py --dry-run
+          else
+            python scripts/daily_snapshot.py
+          fi
+      - name: Guardar historial de avisos del nuevo repositorio
+        if: success() && inputs.dry_run != true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add snapshots/alertas_enviadas.json
+          git diff --cached --quiet || (git commit -m "Registro diario LCrack V4" && git push)
