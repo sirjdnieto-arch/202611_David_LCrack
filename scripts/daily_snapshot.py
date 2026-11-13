@@ -32,20 +32,50 @@ KINDS = {
 }
 
 
+
 def telegram_send(msg: str) -> None:
-    token = os.environ.get('TELEGRAM_BOT_TOKEN','').strip()
-    chat_id = os.environ.get('TELEGRAM_CHAT_ID','').strip()
+    token = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip()
+    chat_id = os.environ.get('TELEGRAM_CHAT_ID', '').strip()
+
     if not token or not chat_id:
-        raise RuntimeError('Faltan secrets TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID')
-    data = urlencode({'chat_id': chat_id, 'text': msg, 'disable_web_page_preview': 'true'}).encode()
-    request = Request(f'https://api.telegram.org/bot{token}/sendMessage', data=data)
+        raise RuntimeError(
+            'Faltan secrets TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID'
+        )
+
+    data = urlencode({
+        'chat_id': chat_id,
+        'text': msg,
+        'disable_web_page_preview': 'true'
+    }).encode()
+
+    request = Request(
+        f'https://api.telegram.org/bot{token}/sendMessage',
+        data=data
+    )
+
     try:
         with urlopen(request, timeout=25) as response:
             body = json.load(response)
+
         if not body.get('ok'):
-            raise RuntimeError('Telegram rechazó el envío')
-    except (HTTPError, URLError) as exc:
-        raise RuntimeError(f'Fallo al notificar Telegram: {type(exc).__name__}') from exc
+            raise RuntimeError(
+                f'Telegram rechazó el envío: '
+                f'{body.get("error_code", "desconocido")}'
+            )
+
+    except HTTPError as exc:
+        # No mostramos URL ni respuesta completa para
+        # evitar revelar accidentalmente el token.
+        raise RuntimeError(
+            f'Telegram HTTP {exc.code}'
+        ) from None
+
+    except URLError as exc:
+        raise RuntimeError(
+            f'Error de conexión con Telegram: '
+            f'{type(exc.reason).__name__}'
+        ) from None
+
 
 
 def load_state():
